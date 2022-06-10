@@ -40,4 +40,5 @@ obj/
 
 .vs/
 
+NtObjectManager/NtObjectManager.dll
 *.swp
