@@ -1,3 +1,5 @@
+dev-env
+
 #msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\EditSection\EditSection.csproj
 msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\NtApiDotNet\NtApiDotNet.csproj
 msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\NtObjectManager\NtObjectManager.csproj

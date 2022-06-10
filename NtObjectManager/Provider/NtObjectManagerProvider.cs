@@ -464,10 +464,14 @@ namespace NtObjectManager.Provider
         /// <param name="path">The drive path.</param>
         protected override void GetItem(string path)
         {
+tq84.indent("GetItem(), path = " + path);
             NtDirectoryEntry entry = GetItemFromPath(path);
-            if (entry == null)
+            if (entry == null) {
+                tq84.dedent();
                 return;
+            }
             WriteItemObject(entry, NTPathToPS(BuildDrivePath(GetRelativePath(PSPathToNT(path)))), entry.IsDirectory);
+tq84.dedent();
         }
 
         private void AddMatches(NtObjectContainer root, string base_path, IEnumerable<string> remaining, List<string> matches)
