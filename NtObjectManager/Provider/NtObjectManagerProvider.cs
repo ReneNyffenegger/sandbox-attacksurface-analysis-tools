@@ -260,7 +260,13 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
 
         private ObjectManagerPSDriveInfo GetDrive()
         {
-            return (ObjectManagerPSDriveInfo)PSDriveInfo;
+            tq84.indent("GetDrive()");
+            ObjectManagerPSDriveInfo ret;
+            ret = (ObjectManagerPSDriveInfo)PSDriveInfo;
+
+//          return (ObjectManagerPSDriveInfo)PSDriveInfo;
+            tq84.dedent("return from GetDrive()");
+            return ret;
         }
 
         private NtResult<NtObjectContainer> GetPathDirectory(string path, bool throw_on_error)
@@ -403,7 +409,7 @@ tq84.indent("NtObjectManagerProvider: GetChildItemsRecursive, relative_path = " 
             try
             {
 tq84.print("calling GetDirectory");
-                using (var dir = GetDirectory(relative_path, false))
+                using (NtResult<NtObjectContainer> dir = GetDirectory(relative_path, false))
                 {
                     if (!dir.IsSuccess) {
                         tq84.print("!dir.IsSuccess");
@@ -414,7 +420,6 @@ tq84.print("calling GetDirectory");
 tq84.print("new Queue");
                     Queue<string> dirs = new Queue<string>();
 tq84.indent("[91miterate over dir.Result.Query()[0m");
-tq84.print("is this indented?");
                     foreach (var dir_info in dir.Result.Query())
                     {
                         string new_path = BuildRelativePath(relative_path, dir_info.Name);
