@@ -280,7 +280,7 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
 
         private NtResult<NtObjectContainer> GetDirectory(string path, bool throw_on_error)
         {
-tq84.indent("GetDirectory");
+tq84.indent("NtObjectContainer.cs - GetDirectory, path = " + path);
 NtResult<NtObjectContainer> ret;
             if (path.Length == 0)
             {
@@ -402,6 +402,7 @@ NtResult<NtObjectContainer> ret;
 tq84.indent("NtObjectManagerProvider: GetChildItemsRecursive, relative_path = " + relative_path);
             try
             {
+tq84.print("calling GetDirectory");
                 using (var dir = GetDirectory(relative_path, false))
                 {
                     if (!dir.IsSuccess) {
@@ -409,11 +410,15 @@ tq84.indent("NtObjectManagerProvider: GetChildItemsRecursive, relative_path = " 
                         tq84.dedent();
                         return;
                     }
-
+ 
+tq84.print("new Queue");
                     Queue<string> dirs = new Queue<string>();
+tq84.indent("[91miterate over dir.Result.Query()[0m");
+tq84.print("is this indented?");
                     foreach (var dir_info in dir.Result.Query())
                     {
                         string new_path = BuildRelativePath(relative_path, dir_info.Name);
+tq84.print("dir_info = " + dir_info + ", new_path = " + new_path);
                         WriteItemObject(GetDrive().DirectoryRoot.CreateEntry(new_path, recurse ? new_path : dir_info.Name, dir_info.NtTypeName), 
                             NTPathToPS(BuildDrivePath(new_path)), dir_info.IsDirectory);
                         if (recurse && dir_info.IsDirectory)
@@ -421,9 +426,10 @@ tq84.indent("NtObjectManagerProvider: GetChildItemsRecursive, relative_path = " 
                             dirs.Enqueue(new_path);
                         }
                     }
-
+tq84.dedent("[91mDone with iteration[0m");
                     if (recurse && dirs.Count > 0 && depth > 0)
                     {
+tq84.print("recurse && dirs.Count > 0 && depth > 0");
                         foreach (string new_dir in dirs)
                         {
                             GetChildItemsRecursive(new_dir, recurse, depth != uint.MaxValue ? depth -1 : uint.MaxValue);
@@ -459,7 +465,7 @@ tq84.indent("NtObjectManagerProvider: GetDhildItems, path = " + path);
 
             string relative_path = GetRelativePath(PSPathToNT(path));
 
-tq84.print("Call GetChildItemsRecursive");
+tq84.print("Call GetChildItemsRecursive, relative_path=" + relative_path + ", depth=" + depth + "recurse = " + recurse);
             GetChildItemsRecursive(relative_path, recurse, depth);
 tq84.dedent();
         }

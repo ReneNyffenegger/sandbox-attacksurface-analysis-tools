@@ -11,9 +11,20 @@ public class tq84 {
    ) {
         indent_ ++;
         print(txt, mbr, fil, lin);
+        indent_ ++;
    }
 
-   public static void dedent() { indent_ -- ;}
+   public static void dedent() { indent_ -= 2 ;}
+   public static void dedent(string txt,
+     [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+     [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+     [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+//   [System.Runtime.CompilerServices.CallerArgumentExpression] string arg = "") // Implemented in compiler for C# 10 and later
+
+   ) { indent_ -= 1 ;
+      print(txt, mbr, fil, lin);
+      indent_ -= 1;
+   }
    public static void print(string txt,
      [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
      [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
