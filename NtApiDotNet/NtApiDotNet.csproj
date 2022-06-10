@@ -1071,6 +1071,7 @@
     <Compile Include="NtWaitTimeout.cs" />
     <Compile Include="NtWaitHandle.cs" />
     <Compile Include="Win32\Service\WnfServiceTriggerInformation.cs" />
+    <Compile Include="tq84.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.txt" />

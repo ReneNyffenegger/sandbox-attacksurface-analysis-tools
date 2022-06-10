@@ -64,8 +64,11 @@ namespace NtApiDotNet
         /// <exception cref="NtException">Thrown on error and throw_on_error is true.</exception>
         public static NtResult<NtDirectory> Open(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, bool throw_on_error)
         {
-            return NtSystemCalls.NtOpenDirectoryObject(out SafeKernelObjectHandle handle, 
+tq84.indent("NTApiDotNet/NtDirectory.cs.Open()");
+            NtResult<NtDirectory> ret = NtSystemCalls.NtOpenDirectoryObject(out SafeKernelObjectHandle handle, 
                 desired_access, obj_attributes).CreateResult(throw_on_error, () => new NtDirectory(handle, false));
+tq84.dedent();
+return ret;
         }
 
         /// <summary>
@@ -90,7 +93,11 @@ namespace NtApiDotNet
         /// <exception cref="NtException">Throw on error</exception>
         public static NtDirectory Open(string name, NtObject root, DirectoryAccessRights desired_access)
         {
-            return Open(name, root, desired_access, true).Result;
+tq84.indent("NTApiDotNet/NtDirectory.cs: Open(), name = " + name);
+// Console.WriteLine("NTApiDotNet/NtDirectory.cs: Open()");
+            NtDirectory ret = Open(name, root, desired_access, true).Result;
+tq84.dedent();
+            return ret;
         }
 
         /// <summary>
