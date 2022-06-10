@@ -31,10 +31,12 @@ namespace NtApiDotNet
         internal NtDirectory(SafeKernelObjectHandle handle) 
             : this(handle, false)
         {
+           tq84.print("NtDirectory ctor");
         }
 
         internal NtDirectory(SafeKernelObjectHandle handle, bool private_namespace) : base(handle)
         {
+            tq84.print("NtDirectory ctor");
             _private_namespace = private_namespace;
         }
 
@@ -69,7 +71,8 @@ namespace NtApiDotNet
      )
 //  
         {
-tq84.indent("NTApiDotNet/NtDirectory.cs.Open(), fil = " + fil + ", lin = " + lin);
+tq84.indent("NTApiDotNet/NtDirectory.cs.Open(3), fil = " + fil + ", lin = " + lin);
+tq84.print("Calling NtSystemCalls.NtOpenDirectoryObject, desired_access = " + ( (int) desired_access));
             NtResult<NtDirectory> ret = NtSystemCalls.NtOpenDirectoryObject(out SafeKernelObjectHandle handle, 
                 desired_access, obj_attributes).CreateResult(throw_on_error, () => new NtDirectory(handle, false));
 tq84.dedent();
@@ -104,7 +107,7 @@ return ret;
 
         )
         {
-tq84.indent("NTApiDotNet/NtDirectory.cs: Open(), name = " + name + " | fil = " + fil + ", lin = " + lin);
+tq84.indent("NTApiDotNet/NtDirectory.cs: Open(1), name = " + name + " | fil = " + fil + ", lin = " + lin);
 // Console.WriteLine("NTApiDotNet/NtDirectory.cs: Open()");
             NtDirectory ret = Open(name, root, desired_access, true).Result;
 tq84.dedent();
@@ -143,7 +146,7 @@ tq84.dedent();
         )
         {
 
-tq84.indent("NTApiDotNet/NtDirectory.cs: Open(), name = " + name); // + " | fil = " + fil + ", lin = " + lin);
+tq84.indent("NTApiDotNet/NtDirectory.cs: Open(2), name = " + name + " | fil = " + fil + ", lin = " + lin + " DirectoryAccessRights.MaximumAllowed = " + ((int) DirectoryAccessRights.MaximumAllowed));
 NtDirectory ret = Open(name, null, DirectoryAccessRights.MaximumAllowed);
 tq84.dedent();
 //          return Open(name, null, DirectoryAccessRights.MaximumAllowed);
@@ -163,6 +166,7 @@ tq84.dedent();
         public static NtResult<NtDirectory> Create(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, 
             NtDirectory shadow_dir, DirectoryCreateFlags flags, bool throw_on_error)
         {
+tq84.indent("Create");
             SafeKernelObjectHandle handle;
             NtStatus status;
             if (shadow_dir == null && flags == DirectoryCreateFlags.None)
@@ -174,6 +178,7 @@ tq84.dedent();
                 status = NtSystemCalls.NtCreateDirectoryObjectEx(out handle, desired_access, obj_attributes,
                     shadow_dir.GetHandle(), flags);
             }
+tq84.dedent();
             return status.CreateResult(throw_on_error, () => new NtDirectory(handle, false));
         }
 
@@ -189,6 +194,8 @@ tq84.dedent();
         public static NtResult<NtDirectory> Create(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, 
             NtDirectory shadow_dir, bool throw_on_error)
         {
+tq84.indent("Create");
+tq84.dedent();
             return Create(obj_attributes, desired_access, shadow_dir, DirectoryCreateFlags.None, throw_on_error);
         }
 
@@ -204,6 +211,8 @@ tq84.dedent();
         public static NtDirectory Create(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, 
             NtDirectory shadow_dir, DirectoryCreateFlags flags)
         {
+tq84.indent("Create");
+tq84.dedent();
             return Create(obj_attributes, desired_access, shadow_dir, flags, true).Result;
         }
 
@@ -217,6 +226,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory Create(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, NtDirectory shadow_dir)
         {
+tq84.indent("Create");
+tq84.dedent();
             return Create(obj_attributes, desired_access, shadow_dir, DirectoryCreateFlags.None, true).Result;
         }
 
@@ -231,6 +242,8 @@ tq84.dedent();
         public static NtDirectory Create(string name, NtObject root, 
             DirectoryAccessRights desired_access)
         {
+tq84.indent("Create");
+tq84.dedent();
             return Create(name, root, desired_access, null);
         }
 
@@ -248,6 +261,8 @@ tq84.dedent();
         {
             using (ObjectAttributes obja = new ObjectAttributes(name, AttributeFlags.CaseInsensitive, root))
             {
+tq84.indent("Create");
+tq84.dedent();
                 return Create(obja, desired_access, shadow_dir);
             }
         }
@@ -260,6 +275,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory Create(string name)
         {
+tq84.indent("Create");
+tq84.dedent();
             return Create(name, null, DirectoryAccessRights.MaximumAllowed);
         }
 
@@ -273,11 +290,13 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenSessionDirectory(int sessionid, string sub_directory, DirectoryAccessRights desired_access)
         {
+tq84.indent("Create");
             string directory = $@"\Sessions\{sessionid}";
             if (!string.IsNullOrEmpty(sub_directory))
             {
                 directory = $@"{directory}\{sub_directory}";
             }
+tq84.dedent();
             return Open(directory, null, desired_access);
         }
 
@@ -288,6 +307,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenSessionDirectory(string sub_directory)
         {
+tq84.indent("OpenSessionDirectory");
+tq84.dedent();
             return OpenSessionDirectory(NtProcess.Current.SessionId, sub_directory, DirectoryAccessRights.MaximumAllowed);
         }
 
@@ -309,6 +330,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenBaseNamedObjects(int sessionid)
         {
+tq84.indent("GetBasedNamedObjects");
+tq84.dedent();
             return Open(GetBasedNamedObjects(sessionid));
         }
 
@@ -319,6 +342,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenBaseNamedObjects()
         {
+tq84.indent("OpenBaseNamedObjects");
+tq84.dedent();
             return OpenBaseNamedObjects(NtProcess.Current.SessionId);
         }
 
@@ -329,6 +354,8 @@ tq84.dedent();
         /// <returns>The based named object's directory.</returns>
         public static string GetBasedNamedObjects(int session_id)
         {
+tq84.indent("GetBasedNamedObjects");
+tq84.dedent();
             if (session_id == 0)
             {
                 return @"\BaseNamedObjects";
@@ -345,6 +372,8 @@ tq84.dedent();
         /// <returns>The based named object's directory.</returns>
         public static string GetBasedNamedObjects()
         {
+tq84.indent("GetBasedNamedObjects");
+tq84.dedent();
             return GetBasedNamedObjects(NtProcess.Current.SessionId);
         }
 
@@ -355,6 +384,8 @@ tq84.dedent();
         /// <returns>The path to the windows object directory.</returns>
         public static string GetWindows(int session_id)
         {
+tq84.indent("GetWindows");
+tq84.dedent();
             if (session_id == 0)
             {
                 return @"\Windows";
@@ -371,6 +402,8 @@ tq84.dedent();
         /// <returns>The path to the windows object directory.</returns>
         public static string GetWindows()
         {
+tq84.indent("GetWindows");
+tq84.dedent();
             return GetWindows(NtProcess.Current.SessionId);
         }
 
@@ -390,6 +423,8 @@ tq84.dedent();
         /// <returns>The path to the window stations object directory.</returns>
         public static string GetWindowStations()
         {
+tq84.indent("GetWindowStations");
+tq84.dedent();
             return GetWindowStations(NtProcess.Current.SessionId);
         }
 
@@ -400,6 +435,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenDosDevicesDirectory(NtToken token)
         {
+tq84.indent("OpenDosDevicesDirectory");
+tq84.dedent();
             Luid authid = token.AuthenticationId;
             if (authid.Equals(NtToken.LocalSystemAuthId))
             {
@@ -416,6 +453,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenDosDevicesDirectory()
         {
+tq84.indent("OpenDosDevicesDirectory");
+tq84.dedent();
             using (NtToken token = NtToken.OpenEffectiveToken())
             {
                 return OpenDosDevicesDirectory(token);
@@ -434,6 +473,8 @@ tq84.dedent();
         public static NtResult<NtDirectory> CreatePrivateNamespace(ObjectAttributes obj_attributes, 
             BoundaryDescriptor boundary_descriptor, DirectoryAccessRights desired_access, bool throw_on_error)
         {
+tq84.indent("NtCreatePrivateNamespace");
+tq84.dedent();
             return NtSystemCalls.NtCreatePrivateNamespace(out SafeKernelObjectHandle handle, desired_access, 
                 obj_attributes, boundary_descriptor.Handle).CreateResult(throw_on_error, () => new NtDirectory(handle, true));
         }
@@ -448,6 +489,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory CreatePrivateNamespace(ObjectAttributes obj_attributes, BoundaryDescriptor boundary_descriptor, DirectoryAccessRights desired_access)
         {
+tq84.indent("NtCreatePrivateNamespace");
+tq84.dedent();
             return CreatePrivateNamespace(obj_attributes, boundary_descriptor, desired_access, true).Result;
         }
 
@@ -459,6 +502,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory CreatePrivateNamespace(BoundaryDescriptor boundary_descriptor)
         {
+tq84.indent("NtCreatePrivateNamespace");
+tq84.dedent();
             using (ObjectAttributes obja = new ObjectAttributes())
             {
                 return CreatePrivateNamespace(obja, boundary_descriptor, DirectoryAccessRights.MaximumAllowed);
@@ -477,6 +522,8 @@ tq84.dedent();
         public static NtResult<NtDirectory> OpenPrivateNamespace(ObjectAttributes obj_attributes, 
             BoundaryDescriptor boundary_descriptor, DirectoryAccessRights desired_access, bool throw_on_error)
         {
+tq84.indent("OpenPrivateNamespace");
+tq84.dedent();
             return NtSystemCalls.NtOpenPrivateNamespace(out SafeKernelObjectHandle handle, desired_access, obj_attributes, boundary_descriptor.Handle)
                 .CreateResult(throw_on_error, () => new NtDirectory(handle, true));
         }
@@ -491,6 +538,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenPrivateNamespace(ObjectAttributes obj_attributes, BoundaryDescriptor boundary_descriptor, DirectoryAccessRights desired_access)
         {
+tq84.indent("OpenPrivateNamespace");
+tq84.dedent();
             return OpenPrivateNamespace(obj_attributes, boundary_descriptor, desired_access, true).Result;
         }
 
@@ -502,6 +551,8 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public static NtDirectory OpenPrivateNamespace(BoundaryDescriptor boundary_descriptor)
         {
+tq84.indent("OpenPrivateNamespace");
+tq84.dedent();
             using (ObjectAttributes obja = new ObjectAttributes())
             {
                 return OpenPrivateNamespace(obja, boundary_descriptor, DirectoryAccessRights.MaximumAllowed);
@@ -516,6 +567,8 @@ tq84.dedent();
         /// <returns>True if the directory exists for the specified path.</returns>
         public static bool DirectoryExists(string path, NtDirectory root)
         {
+tq84.indent("DirectoryExists");
+tq84.dedent();
             using (var dir = Open(path, root, DirectoryAccessRights.MaximumAllowed, false))
             {
                 return dir.IsSuccess;
@@ -530,6 +583,8 @@ tq84.dedent();
         /// <returns>The type name, or null if it can't be found.</returns>
         public static string GetDirectoryEntryType(string path, NtObject root)
         {
+tq84.indent("GetDirectoryEntryType");
+tq84.dedent();
             if (root == null && (path == @"\" || path == @"\??"))
             {
                 return "Directory";
@@ -566,6 +621,7 @@ tq84.dedent();
         /// <exception cref="NtException">Thrown on error</exception>
         public IEnumerable<ObjectDirectoryInformation> Query()
         {
+// tq84.indent("Query");
             string base_path = FullPath.TrimEnd('\\');
             using (SafeStructureInOutBuffer<OBJECT_DIRECTORY_INFORMATION> buffer
                 = new SafeStructureInOutBuffer<OBJECT_DIRECTORY_INFORMATION>(2048, true))
@@ -573,6 +629,7 @@ tq84.dedent();
                 NtStatus status;
                 int context = 0;
                 int return_length = 0;
+                tq84.print("Call NtSystemCalls.NtQueryDirectoryObject");
                 while ((status = NtSystemCalls.NtQueryDirectoryObject(Handle, buffer, buffer.Length, false,
                     true, ref context, out return_length)) == NtStatus.STATUS_MORE_ENTRIES)
                 {
@@ -581,6 +638,8 @@ tq84.dedent();
 
                 if (status == NtStatus.STATUS_NO_MORE_ENTRIES)
                 {
+//                  tq84.print("Query -> yield");
+//                  tq84.dedent();
                     yield break;
                 }
 
@@ -590,14 +649,19 @@ tq84.dedent();
                 {
                     var dir_info = current.ReadStruct<OBJECT_DIRECTORY_INFORMATION>();
                     string name = dir_info.Name.ToString();
+//                  tq84.print("name = " + name);
                     if (name.Length == 0)
                     {
                         break;
                     }
+//                  tq84.print("Query -> yield and return");
+//                  tq84.dedent();
                     yield return new ObjectDirectoryInformation(this, base_path, dir_info);
                     current += Marshal.SizeOf(dir_info);
                 }
             }
+
+//tq84.dedent();
         }
 
         /// <summary>
@@ -610,6 +674,8 @@ tq84.dedent();
         /// <returns>True if all children were visited.</returns>
         public bool VisitAccessibleDirectories(Func<NtDirectory, bool> visitor, DirectoryAccessRights desired_access, bool recurse, int max_depth)
         {
+tq84.indent("VisitAccessibleDirectories");
+tq84.dedent();
             if (max_depth == 0)
             {
                 return true;
@@ -665,6 +731,8 @@ tq84.dedent();
         /// <param name="visitor">A function to be called on every accessible directory. Return true to continue enumeration.</param>
         public void VisitAccessibleDirectories(Func<NtDirectory, bool> visitor)
         {
+tq84.indent("VisitAccessibleDirectories");
+tq84.dedent();
             VisitAccessibleDirectories(visitor, false);
         }
 
@@ -675,6 +743,8 @@ tq84.dedent();
         /// <param name="recurse">True to recurse into sub directories.</param>
         public void VisitAccessibleDirectories(Func<NtDirectory, bool> visitor, bool recurse)
         {
+tq84.indent("VisitAccessibleDirectories");
+tq84.dedent();
             VisitAccessibleDirectories(visitor, DirectoryAccessRights.MaximumAllowed, recurse);
         }
 
@@ -686,6 +756,8 @@ tq84.dedent();
         /// <param name="recurse">True to recurse into sub directories.</param>
         public void VisitAccessibleDirectories(Func<NtDirectory, bool> visitor, DirectoryAccessRights desired_access, bool recurse)
         {
+tq84.indent("VisitAccessibleDirectories");
+tq84.dedent();
             VisitAccessibleDirectories(visitor, desired_access, recurse, -1);
         }
 
@@ -704,6 +776,8 @@ tq84.dedent();
         /// <returns>The NT status code.</returns>
         public NtStatus Delete(bool throw_on_error)
         {
+tq84.indent("Delete");
+tq84.dedent();
             if (_private_namespace)
             {
                 return NtSystemCalls.NtDeletePrivateNamespace(Handle).ToNtException(throw_on_error);
@@ -720,6 +794,8 @@ tq84.dedent();
         /// <returns>The directory entry, or null if it can't be found.</returns>
         public ObjectDirectoryInformation GetDirectoryEntry(string name, string typename, bool case_sensitive)
         {
+tq84.indent("GetDirectoryEntry");
+tq84.dedent();
             StringComparison comparison_type = case_sensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
             foreach (ObjectDirectoryInformation dir_info in Query())
             {
@@ -745,6 +821,8 @@ tq84.dedent();
         /// <returns>The directory entry, or null if it can't be found.</returns>
         public ObjectDirectoryInformation GetDirectoryEntry(string name)
         {
+tq84.indent("GetDirectoryEntry");
+tq84.dedent();
             return GetDirectoryEntry(name, null, false);
         }
 
@@ -755,6 +833,8 @@ tq84.dedent();
         /// <returns>True if the directory exists.</returns>
         public bool DirectoryExists(string relative_path)
         {
+tq84.indent("DirectoryExists");
+tq84.dedent();
             return DirectoryExists(relative_path, this);
         }
 
@@ -767,6 +847,8 @@ tq84.dedent();
         /// <remarks>Needs SeTcbPrivilege.</remarks>
         public NtStatus SetCurrentSessionId(bool throw_on_error = true)
         {
+tq84.indent("SetCurrentSessionId");
+tq84.dedent();
             return NtSystemCalls.NtSetInformationObject(Handle, 
                 ObjectInformationClass.ObjectSessionInformation, 
                 SafeHGlobalBuffer.Null, 0).ToNtException(throw_on_error);
@@ -781,6 +863,8 @@ tq84.dedent();
         /// <remarks>Needs SeTcbPrivilege.</remarks>
         public NtStatus SetCurrentSessionObject(bool throw_on_error = true)
         {
+tq84.indent("SetCurrentSessionObject");
+tq84.dedent();
             return NtSystemCalls.NtSetInformationObject(Handle,
                 ObjectInformationClass.ObjectSessionObjectInformation,
                 SafeHGlobalBuffer.Null, 0).ToNtException(throw_on_error);
@@ -801,6 +885,8 @@ tq84.dedent();
 
         private static string GetDirectoryName(string path)
         {
+tq84.indent("GetDirectoryName");
+tq84.dedent();
             int index = path.LastIndexOf('\\');
             if (index < 0)
             {
@@ -814,6 +900,8 @@ tq84.dedent();
 
         private static string GetFileName(string path)
         {
+tq84.indent("GetFileName");
+tq84.dedent();
             int index = path.LastIndexOf('\\');
             if (index < 0)
             {

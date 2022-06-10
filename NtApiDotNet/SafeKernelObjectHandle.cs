@@ -27,11 +27,17 @@ namespace NtApiDotNet
         private SafeKernelObjectHandle()
             : base(IntPtr.Zero, true)
         {
+// tq84.print("SafeKernelObjectHandle.ctor");
         }
 
-        internal SafeKernelObjectHandle(int pseudo_handle)
+        internal SafeKernelObjectHandle(int pseudo_handle
+//   [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+//   [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+//   [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+        )
             : this(new IntPtr(pseudo_handle), false)
         {
+//tq84.print("SafeKernelObjectHandle.ctor/pseudo, fil=" + fil + " @ " + lin);
             PseudoHandle = true;
         }
 
@@ -40,9 +46,15 @@ namespace NtApiDotNet
         /// </summary>
         /// <param name="handle">An existing kernel handle.</param>
         /// <param name="owns_handle">True to own the kernel handle.</param>
-        public SafeKernelObjectHandle(IntPtr handle, bool owns_handle)
+        public SafeKernelObjectHandle(IntPtr handle, bool owns_handle
+//   [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+//   [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+//   [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+
+        )
           : base(IntPtr.Zero, owns_handle)
         {
+// tq84.print("SafeKernelObjectHandle.ctor/public, fil=" + fil + " @ " + lin);
             SetHandle(handle);
         }
 
@@ -52,6 +64,7 @@ namespace NtApiDotNet
         /// <returns>True if successfully released the handle.</returns>
         protected override bool ReleaseHandle()
         {
+//tq84.print("SafeKernelObjectHandle ReleaseHandle");
             if (PseudoHandle)
                 return false;
             if (NtSystemCalls.NtClose(handle).IsSuccess())
@@ -73,6 +86,17 @@ namespace NtApiDotNet
         /// Get a handle which represents NULL.
         /// </summary>
         public static SafeKernelObjectHandle Null => new SafeKernelObjectHandle(IntPtr.Zero, false);
+//      public static SafeKernelObjectHandle Null(
+//   [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+//   [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+//   [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+
+//      )
+//      {
+//         tq84.print("SafeKernelObjectHandle.Null, fil = " + fil + " @ " + lin);
+//         return new SafeKernelObjectHandle(IntPtr.Zero, false);
+//      }
+
 
         private ObjectHandleInformation QueryHandleInformation()
         {
@@ -138,6 +162,7 @@ namespace NtApiDotNet
         {
             get
             {
+                tq84.print("SafeKernelObjectHandle.NtTypeName");
                 if (_type_name == null)
                 {
                     using (var type_info = new SafeStructureInOutBuffer<ObjectTypeInformation>(1024, true))

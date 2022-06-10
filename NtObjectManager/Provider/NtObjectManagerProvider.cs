@@ -109,6 +109,10 @@ namespace NtObjectManager.Provider
         /// <returns>The new drive info.</returns>
         protected override PSDriveInfo NewDrive(PSDriveInfo drive)
         {
+tq84.indent("NtObjectManagerProvider.cs: newDrive()");
+tq84.print("name        = " + drive.Name);
+tq84.print("root        = " + drive.Root);
+tq84.print("displayRoot = " + drive.DisplayRoot);
             if (drive == null)
             {
                 WriteError(new ErrorRecord(
@@ -117,6 +121,7 @@ namespace NtObjectManager.Provider
                            ErrorCategory.InvalidArgument,
                            null));
 
+                tq84.dedent();
                 return null;
             }
 
@@ -130,6 +135,7 @@ namespace NtObjectManager.Provider
                            ErrorCategory.InvalidArgument,
                            null));
 
+                tq84.dedent();
                 return null;
             }
 
@@ -142,17 +148,20 @@ namespace NtObjectManager.Provider
                         using (NtDirectory dir = NtDirectory.OpenPrivateNamespace(descriptor))
                         {
                             ObjectManagerPSDriveInfo objmgr_drive = new ObjectManagerPSDriveInfo(dir.Duplicate(), drive);
+                            tq84.dedent();
                             return objmgr_drive;
                         }
                     }
                 }
                 else if (drive.Root.StartsWith(GLOBAL_ROOT))
                 {
+                    tq84.print("root is \\");
                     using (NtDirectory root = NtDirectory.Open(@"\"))
                     {
                         using (NtDirectory dir = NtDirectory.Open(drive.Root.Substring(GLOBAL_ROOT.Length), root, DirectoryAccessRights.MaximumAllowed))
                         {
                             ObjectManagerPSDriveInfo objmgr_drive = new ObjectManagerPSDriveInfo(dir.Duplicate(), drive);
+                            tq84.dedent();
                             return objmgr_drive;
                         }
                     }
@@ -164,6 +173,7 @@ namespace NtObjectManager.Provider
                         using (NtKey key = NtKey.Open(drive.Root.Substring(KEY_ROOT.Length).TrimStart('\\'), root, KeyAccessRights.MaximumAllowed))
                         {
                             ObjectManagerPSDriveInfo objmgr_drive = new ObjectManagerPSDriveInfo(key.Duplicate(), drive);
+                            tq84.dedent();
                             return objmgr_drive;
                         }
                     }
@@ -176,8 +186,11 @@ namespace NtObjectManager.Provider
                 "NoRoot",
                 ErrorCategory.PermissionDenied,
                 drive));
+                tq84.dedent();
                 return null;
             }
+ 
+        tq84.dedent();
         }
 
         /// <summary>
@@ -267,12 +280,20 @@ namespace NtObjectManager.Provider
 
         private NtResult<NtObjectContainer> GetDirectory(string path, bool throw_on_error)
         {
+tq84.indent("GetDirectory");
+NtResult<NtObjectContainer> ret;
             if (path.Length == 0)
             {
-                return GetDrive().DirectoryRoot.Duplicate(throw_on_error);
+                tq84.print("path.Length == 0");
+                ret = GetDrive().DirectoryRoot.Duplicate(throw_on_error);
+                tq84.dedent();
+                return ret;
             }
 
-            return GetDrive().DirectoryRoot.Open(path, throw_on_error);
+            tq84.print("path = " + path);
+            ret = GetDrive().DirectoryRoot.Open(path, throw_on_error);
+            tq84.dedent();
+            return ret;
         }
 
         private NtObjectContainerEntry GetEntry(NtObjectContainer dir, string path)
@@ -378,12 +399,16 @@ namespace NtObjectManager.Provider
 
         private void GetChildItemsRecursive(string relative_path, bool recurse, uint depth)
         {
+tq84.indent("NtObjectManagerProvider: GetChildItemsRecursive, relative_path = " + relative_path);
             try
             {
                 using (var dir = GetDirectory(relative_path, false))
                 {
-                    if (!dir.IsSuccess)
+                    if (!dir.IsSuccess) {
+                        tq84.print("!dir.IsSuccess");
+                        tq84.dedent();
                         return;
+                    }
 
                     Queue<string> dirs = new Queue<string>();
                     foreach (var dir_info in dir.Result.Query())
@@ -413,6 +438,8 @@ namespace NtObjectManager.Provider
                     throw;
                 }
             }
+tq84.print("returning from GetChildItemsRecursive()");
+tq84.dedent();
         }
 
         /// <summary>
@@ -423,14 +450,18 @@ namespace NtObjectManager.Provider
         /// <param name="depth">Depth of the recursion.</param>
         protected override void GetChildItems(string path, bool recurse, uint depth)
         {
+tq84.indent("NtObjectManagerProvider: GetDhildItems, path = " + path);
             if (GetDrive() == null)
             {
+                tq84.dedent();
                 return;
             }
 
             string relative_path = GetRelativePath(PSPathToNT(path));
 
+tq84.print("Call GetChildItemsRecursive");
             GetChildItemsRecursive(relative_path, recurse, depth);
+tq84.dedent();
         }
 
         /// <summary>
