@@ -64,14 +64,14 @@ namespace NtApiDotNet
         /// <param name="throw_on_error">True to throw an exception on error.</param>
         /// <returns>The NT status code and object result.</returns>
         /// <exception cref="NtException">Thrown on error and throw_on_error is true.</exception>
-        public static NtResult<NtDirectory> Open(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, bool throw_on_error,
-     [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
-     [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
-     [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+        public static NtResult<NtDirectory> Open(ObjectAttributes obj_attributes, DirectoryAccessRights desired_access, bool throw_on_error
+//   [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+//   [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+//   [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
      )
 //  
         {
-tq84.indent("NTApiDotNet/NtDirectory.cs.Open(3), fil = " + fil + ", lin = " + lin);
+tq84.indent("NTApiDotNet/NtDirectory.cs.Open(3)");//, fil = " + fil + ", lin = " + lin);
 tq84.print("Calling NtSystemCalls.NtOpenDirectoryObject, desired_access = " + ( (int) desired_access));
             NtResult<NtDirectory> ret = NtSystemCalls.NtOpenDirectoryObject(out SafeKernelObjectHandle handle, 
                 desired_access, obj_attributes).CreateResult(throw_on_error, () => new NtDirectory(handle, false));
@@ -99,15 +99,15 @@ return ret;
         /// <param name="desired_access">Access rights for directory object</param>
         /// <returns>The directory object</returns>
         /// <exception cref="NtException">Throw on error</exception>
-        public static NtDirectory Open(string name, NtObject root, DirectoryAccessRights desired_access,
+        public static NtDirectory Open(string name, NtObject root, DirectoryAccessRights desired_access
 
-     [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
-     [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
-     [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+//   [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+//   [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+//   [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
 
         )
         {
-tq84.indent("NTApiDotNet/NtDirectory.cs: Open(1), name = " + name + " | fil = " + fil + ", lin = " + lin);
+tq84.indent("NTApiDotNet/NtDirectory.cs: Open(1)"); //, name = " + name + " | fil = " + fil + ", lin = " + lin);
 // Console.WriteLine("NTApiDotNet/NtDirectory.cs: Open()");
             NtDirectory ret = Open(name, root, desired_access, true).Result;
 tq84.dedent();
@@ -138,15 +138,15 @@ tq84.dedent();
         /// <param name="name">The directory object to open</param>
         /// <returns>The directory object</returns>
         /// <exception cref="NtException">Throw on error</exception>
-        public static NtDirectory Open(string name,
-     [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
-     [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
-     [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+        public static NtDirectory Open(string name
+//   [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+//   [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+//   [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
 
         )
         {
 
-tq84.indent("NTApiDotNet/NtDirectory.cs: Open(2), name = " + name + " | fil = " + fil + ", lin = " + lin + " DirectoryAccessRights.MaximumAllowed = " + ((int) DirectoryAccessRights.MaximumAllowed));
+tq84.indent("NTApiDotNet/NtDirectory.cs: Open(2)"); // , name = " + name + " | fil = " + fil + ", lin = " + lin + " DirectoryAccessRights.MaximumAllowed = " + ((int) DirectoryAccessRights.MaximumAllowed));
 NtDirectory ret = Open(name, null, DirectoryAccessRights.MaximumAllowed);
 tq84.dedent();
 //          return Open(name, null, DirectoryAccessRights.MaximumAllowed);

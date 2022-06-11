@@ -109,10 +109,10 @@ namespace NtObjectManager.Provider
         /// <returns>The new drive info.</returns>
         protected override PSDriveInfo NewDrive(PSDriveInfo drive)
         {
-tq84.indent("NtObjectManagerProvider.cs: newDrive()");
-tq84.print("name        = " + drive.Name);
-tq84.print("root        = " + drive.Root);
-tq84.print("displayRoot = " + drive.DisplayRoot);
+tq84.indent("[93mNtObjectManagerProvider.cs: newDrive()[0m");
+// tq84.print("name        = " + drive.Name);
+// tq84.print("root        = " + drive.Root);
+// tq84.print("displayRoot = " + drive.DisplayRoot);
             if (drive == null)
             {
                 WriteError(new ErrorRecord(
@@ -121,7 +121,7 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
                            ErrorCategory.InvalidArgument,
                            null));
 
-                tq84.dedent();
+                tq84.dedent("Leaving newDrive()");
                 return null;
             }
 
@@ -135,7 +135,7 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
                            ErrorCategory.InvalidArgument,
                            null));
 
-                tq84.dedent();
+                tq84.dedent("Leaving newDrive()");
                 return null;
             }
 
@@ -148,7 +148,7 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
                         using (NtDirectory dir = NtDirectory.OpenPrivateNamespace(descriptor))
                         {
                             ObjectManagerPSDriveInfo objmgr_drive = new ObjectManagerPSDriveInfo(dir.Duplicate(), drive);
-                            tq84.dedent();
+                            tq84.dedent("Leaving newDrive()");
                             return objmgr_drive;
                         }
                     }
@@ -161,7 +161,7 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
                         using (NtDirectory dir = NtDirectory.Open(drive.Root.Substring(GLOBAL_ROOT.Length), root, DirectoryAccessRights.MaximumAllowed))
                         {
                             ObjectManagerPSDriveInfo objmgr_drive = new ObjectManagerPSDriveInfo(dir.Duplicate(), drive);
-                            tq84.dedent();
+                            tq84.dedent("Leaving newDrive()");
                             return objmgr_drive;
                         }
                     }
@@ -173,7 +173,7 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
                         using (NtKey key = NtKey.Open(drive.Root.Substring(KEY_ROOT.Length).TrimStart('\\'), root, KeyAccessRights.MaximumAllowed))
                         {
                             ObjectManagerPSDriveInfo objmgr_drive = new ObjectManagerPSDriveInfo(key.Duplicate(), drive);
-                            tq84.dedent();
+                            tq84.dedent("Leaving newDrive()");
                             return objmgr_drive;
                         }
                     }
@@ -186,11 +186,11 @@ tq84.print("displayRoot = " + drive.DisplayRoot);
                 "NoRoot",
                 ErrorCategory.PermissionDenied,
                 drive));
-                tq84.dedent();
+                tq84.dedent("Leaving newDrive()");
                 return null;
             }
  
-        tq84.dedent();
+        tq84.dedent("Leaving newDrive()");
         }
 
         /// <summary>

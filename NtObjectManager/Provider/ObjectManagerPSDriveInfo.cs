@@ -23,12 +23,15 @@ namespace NtObjectManager.Provider
         public ObjectManagerPSDriveInfo(NtObject root, PSDriveInfo drive_info) 
             : base(drive_info)
         {
+tq84.indent("[91mObjectManagerPSDriveInfo.ctor[0m");
             if (root is NtDirectory dir)
             {
+tq84.print("root is NtDirectory, setting DirectoryRoot to NtDirectoryContainer");
                 DirectoryRoot = new NtDirectoryContainer(dir);
             }
             else if (root is NtKey key)
             {
+tq84.print("root is NtKey");
                 bool open_for_backup = false;
                 using (var token = NtToken.OpenProcessToken())
                 {
@@ -38,12 +41,14 @@ namespace NtObjectManager.Provider
                     }
                 }
 
+tq84.print("Setting DirectoryRoot to NtKeyContainer");
                 DirectoryRoot = new NtKeyContainer(key, open_for_backup);
             }
             else
             {
                 throw new ArgumentException($"Invalid root object. {root.NtTypeName}");
             }
+tq84.dedent("Leaving ObjectManagerPSDriveInfo.ctor()");
         }
 
         public NtObjectContainer DirectoryRoot { get; }
