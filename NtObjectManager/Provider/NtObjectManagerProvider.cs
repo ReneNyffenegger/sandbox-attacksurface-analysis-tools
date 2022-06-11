@@ -64,6 +64,7 @@ namespace NtObjectManager.Provider
         /// <returns>The list of default drives.</returns>
         protected override Collection<PSDriveInfo> InitializeDefaultDrives()
         {
+tq84.indent("InitializeDefaultDrives()");
             Collection<PSDriveInfo> drives = new Collection<PSDriveInfo>();
 
             drives.Add(new PSDriveInfo("NtObject", ProviderInfo, GLOBAL_ROOT, "NT Object Manager Root Directory", null));
@@ -78,9 +79,11 @@ namespace NtObjectManager.Provider
                 base_dir = $@"{GLOBAL_ROOT}Sessions\{session_id}\BaseNamedObjects";
             }
 
+tq84.print("drives.add PSDriveInfo(NtObjectSession)");
             drives.Add(new PSDriveInfo("NtObjectSession", ProviderInfo,
                 base_dir, "Current Session NT Objects", null));
 
+tq84.print("drives.add PSDriveInfo(NtKey)");
             drives.Add(new PSDriveInfo("NtKey", ProviderInfo,
                 KEY_ROOT, "Root NT Key Directory", null));
 
@@ -89,16 +92,19 @@ namespace NtObjectManager.Provider
             {
                 if (key.IsSuccess)
                 {
+tq84.print("drives.add PSDriveInfo(NtKeyUser) 1");
                     drives.Add(new PSDriveInfo("NtKeyUser", ProviderInfo,
                         $@"{KEY_ROOT}{user_path}", "User NT Key Directory", null));
                 }
                 else
                 {
+tq84.print("drives.add PSDriveInfo(NtKeyUser) 2");
                     drives.Add(new PSDriveInfo("NtKeyUser", ProviderInfo,
                         $@"{KEY_ROOT}User\.DEFAULT", "User NT Key Directory", null));
                 }
             }
 
+tq84.dedent("returning from InitializeDefaultDrives");
             return drives;
         }
 
