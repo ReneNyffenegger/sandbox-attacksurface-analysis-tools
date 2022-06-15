@@ -79,7 +79,7 @@ tq84.indent("InitializeDefaultDrives()");
                 base_dir = $@"{GLOBAL_ROOT}Sessions\{session_id}\BaseNamedObjects";
             }
 
-tq84.print("drives.add PSDriveInfo(NtObjectSession)");
+tq84.print("drives.add PSDriveInfo(NtObjectSession), base_dir = " + base_dir);
             drives.Add(new PSDriveInfo("NtObjectSession", ProviderInfo,
                 base_dir, "Current Session NT Objects", null));
 
@@ -115,10 +115,7 @@ tq84.dedent("returning from InitializeDefaultDrives");
         /// <returns>The new drive info.</returns>
         protected override PSDriveInfo NewDrive(PSDriveInfo drive)
         {
-tq84.indent("[93mNtObjectManagerProvider.cs: newDrive()[0m");
-// tq84.print("name        = " + drive.Name);
-// tq84.print("root        = " + drive.Root);
-// tq84.print("displayRoot = " + drive.DisplayRoot);
+tq84.indent("[93mNtObjectManagerProvider.cs: NewDrive()[0m - name = " + drive.Name + ", root " + drive.Root + ", displayRoot: " + drive.DisplayRoot);
             if (drive == null)
             {
                 WriteError(new ErrorRecord(
@@ -196,7 +193,8 @@ tq84.indent("[93mNtObjectManagerProvider.cs: newDrive()[0m");
                 return null;
             }
  
-        tq84.dedent("Leaving newDrive()");
+// Unreachable code:
+//      tq84.dedent("Leaving newDrive()");
         }
 
         /// <summary>
@@ -264,9 +262,13 @@ tq84.indent("[93mNtObjectManagerProvider.cs: newDrive()[0m");
             return path;
         }
 
-        private ObjectManagerPSDriveInfo GetDrive()
+        private ObjectManagerPSDriveInfo GetDrive(
+     [System.Runtime.CompilerServices.CallerMemberName        ] string mbr = "",
+     [System.Runtime.CompilerServices.CallerFilePath          ] string fil = "",
+     [System.Runtime.CompilerServices.CallerLineNumber        ] int    lin =  0
+        )
         {
-            tq84.indent("GetDrive()");
+            tq84.indent("GetDrive(): X " + mbr + ", " + fil + " @ " + lin);
             ObjectManagerPSDriveInfo ret;
             ret = (ObjectManagerPSDriveInfo)PSDriveInfo;
 

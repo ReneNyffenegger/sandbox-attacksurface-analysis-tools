@@ -2,7 +2,17 @@ dev-env
 
 #msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\EditSection\EditSection.csproj
 msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\NtApiDotNet\NtApiDotNet.csproj
+
+if (-not $?) {
+  "first msbuild failed"
+   return
+}
+
 msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\NtObjectManager\NtObjectManager.csproj
+if (-not $?) {
+  "second msbuild failed"
+   return
+}
 # msbuild C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\NtApiDotNet\NtApiDotNet.Build.csproj
 
 cp C:\Users\Rene\github\sandbox-attacksurface-analysis-tools\bin\Debug\NtObjectManager.dll NtObjectManager
